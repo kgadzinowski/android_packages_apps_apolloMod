@@ -4,13 +4,17 @@
 
 package com.andrew.apolloMod.ui.fragments.list;
 
-import android.app.LoaderManager.LoaderCallbacks;
+
+import static com.andrew.apolloMod.Constants.EXTERNAL;
+import static com.andrew.apolloMod.Constants.INTENT_ADD_TO_PLAYLIST;
+import static com.andrew.apolloMod.Constants.INTENT_PLAYLIST_LIST;
+import static com.andrew.apolloMod.Constants.MIME_TYPE;
+import static com.andrew.apolloMod.Constants.PLAYLIST_FAVORITES;
+import static com.andrew.apolloMod.Constants.PLAYLIST_QUEUE;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +26,9 @@ import android.provider.MediaStore.Audio.AudioColumns;
 import android.provider.MediaStore.Audio.Genres;
 import android.provider.MediaStore.Audio.Playlists;
 import android.provider.MediaStore.MediaColumns;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -29,12 +36,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.internal.widget.IcsAdapterView.AdapterContextMenuInfo;
 import com.andrew.apolloMod.NowPlayingCursor;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.helpers.RefreshableFragment;
@@ -42,13 +49,6 @@ import com.andrew.apolloMod.helpers.utils.ApolloUtils;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.service.ApolloService;
 import com.andrew.apolloMod.ui.adapters.TrackAdapter;
-
-import static com.andrew.apolloMod.Constants.EXTERNAL;
-import static com.andrew.apolloMod.Constants.INTENT_ADD_TO_PLAYLIST;
-import static com.andrew.apolloMod.Constants.INTENT_PLAYLIST_LIST;
-import static com.andrew.apolloMod.Constants.MIME_TYPE;
-import static com.andrew.apolloMod.Constants.PLAYLIST_FAVORITES;
-import static com.andrew.apolloMod.Constants.PLAYLIST_QUEUE;
 
 /**
  * @author Andrew Neal
@@ -119,7 +119,7 @@ public class TracksFragment extends RefreshableFragment implements LoaderCallbac
     public void refresh() {
         // The data need to be refreshed
         if( mListView != null ) {
-            getLoaderManager().restartLoader(0, null, this);
+        	getLoaderManager().restartLoader(0, null, this);
         }
     }
 

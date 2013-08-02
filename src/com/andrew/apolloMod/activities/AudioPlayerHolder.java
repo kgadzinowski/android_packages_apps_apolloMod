@@ -4,7 +4,12 @@
 
 package com.andrew.apolloMod.activities;
 
-import android.app.Activity;
+
+import static com.andrew.apolloMod.Constants.INTENT_ADD_TO_PLAYLIST;
+import static com.andrew.apolloMod.Constants.INTENT_PLAYLIST_LIST;
+import static com.andrew.apolloMod.Constants.MIME_TYPE;
+import static com.andrew.apolloMod.Constants.PLAYLIST_QUEUE;
+import static com.andrew.apolloMod.Constants.THEME_ITEM_BACKGROUND;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -21,36 +26,31 @@ import android.os.RemoteException;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Audio;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.andrew.apolloMod.ui.adapters.PagerAdapter;
-import com.andrew.apolloMod.ui.fragments.AudioPlayerFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.andrew.apolloMod.IApolloService;
 import com.andrew.apolloMod.R;
-import com.andrew.apolloMod.ui.fragments.list.TracksFragment;
 import com.andrew.apolloMod.helpers.utils.ApolloUtils;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.helpers.utils.ThemeUtils;
 import com.andrew.apolloMod.preferences.SettingsHolder;
 import com.andrew.apolloMod.service.ApolloService;
 import com.andrew.apolloMod.service.ServiceToken;
-
-import static com.andrew.apolloMod.Constants.INTENT_ADD_TO_PLAYLIST;
-import static com.andrew.apolloMod.Constants.INTENT_PLAYLIST_LIST;
-import static com.andrew.apolloMod.Constants.MIME_TYPE;
-import static com.andrew.apolloMod.Constants.PLAYLIST_QUEUE;
-import static com.andrew.apolloMod.Constants.THEME_ITEM_BACKGROUND;
+import com.andrew.apolloMod.ui.adapters.PagerAdapter;
+import com.andrew.apolloMod.ui.fragments.AudioPlayerFragment;
+import com.andrew.apolloMod.ui.fragments.list.TracksFragment;
 
 /**
  * @author Andrew Neal
  * @Note This is the "holder" for the @TracksFragment(queue) and @AudioPlayerFragment
  */
-public class AudioPlayerHolder extends Activity implements ServiceConnection {
+public class AudioPlayerHolder extends SherlockFragmentActivity implements ServiceConnection {
 
     private ServiceToken mToken;
 
@@ -157,7 +157,7 @@ public class AudioPlayerHolder extends Activity implements ServiceConnection {
         menu.add(0, SEARCH, 0, R.string.cd_search).setIcon(R.drawable.apollo_holo_light_search)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.overflow_now_playing, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -243,7 +243,7 @@ public class AudioPlayerHolder extends Activity implements ServiceConnection {
     }   
 
     private void initActionBar() {
-        ApolloUtils.showUpTitleOnly(getActionBar());
+        ApolloUtils.showUpTitleOnly(getSupportActionBar());
 
         // The ActionBar Title and UP ids are hidden.
         int titleId = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
@@ -253,7 +253,7 @@ public class AudioPlayerHolder extends Activity implements ServiceConnection {
         ImageView actionBarUp = (ImageView)findViewById(upId);
 
         // Theme chooser
-        ThemeUtils.setActionBarBackground(this, getActionBar(), "action_bar_background");
+        ThemeUtils.setActionBarBackground(this, getSupportActionBar(), "action_bar_background");
         ThemeUtils.setTextColor(this, actionBarTitle, "action_bar_title_color");
         ThemeUtils.initThemeChooser(this, actionBarUp, "action_bar_up", THEME_ITEM_BACKGROUND);
     }
@@ -286,7 +286,7 @@ public class AudioPlayerHolder extends Activity implements ServiceConnection {
      */
     public void initPager() {
         // Initiate PagerAdapter
-        mPagerAdapter = new PagerAdapter(getFragmentManager());
+        mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         Bundle bundle = new Bundle();
         bundle.putString(MIME_TYPE, Audio.Playlists.CONTENT_TYPE);
         bundle.putLong(BaseColumns._ID, PLAYLIST_QUEUE);

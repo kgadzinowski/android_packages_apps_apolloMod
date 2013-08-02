@@ -28,6 +28,7 @@ import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.andrew.apolloMod.IApolloService;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.activities.MusicLibrary;
@@ -106,7 +107,7 @@ public class SettingsHolder extends PreferenceActivity  implements ServiceConnec
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         	@Override
                             public void onClick(final DialogInterface dialog, final int which) {                        		
-                                ImageProvider.getInstance( (Activity) mContext ).clearAllCaches();
+                                ImageProvider.getInstance( (SherlockFragmentActivity) mContext ).clearAllCaches();
                             }
                         }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 

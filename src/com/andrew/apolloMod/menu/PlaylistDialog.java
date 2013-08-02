@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 
@@ -47,7 +48,7 @@ import static com.andrew.apolloMod.Constants.INTENT_PLAYLIST_LIST;
 import static com.andrew.apolloMod.Constants.INTENT_RENAME_PLAYLIST;
 import static com.andrew.apolloMod.Constants.PLAYLIST_NAME_FAVORITES;
 
-public class PlaylistDialog extends FragmentActivity implements TextWatcher,
+public class PlaylistDialog extends SherlockFragmentActivity implements TextWatcher,
         OnCancelListener, OnShowListener {
 
     private AlertDialog mPlaylistDialog;

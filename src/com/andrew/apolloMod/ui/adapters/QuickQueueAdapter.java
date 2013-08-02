@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.andrew.apolloMod.cache.ImageInfo;
 import com.andrew.apolloMod.cache.ImageProvider;
 import com.andrew.apolloMod.ui.fragments.grid.QuickQueueFragment;
@@ -32,9 +33,9 @@ public class QuickQueueAdapter extends SimpleCursorAdapter {
     
     public QuickQueueAdapter(Context context, int layout, Cursor c, String[] from, int[] to,
             int flags) {
-        super(context, layout, c, from, to, flags);
+        super(context, layout, c, from, to);
     	mContext = context;
-    	mImageProvider = ImageProvider.getInstance( (Activity) mContext );
+    	mImageProvider = ImageProvider.getInstance( (SherlockFragmentActivity) mContext );
     }
 
     @Override

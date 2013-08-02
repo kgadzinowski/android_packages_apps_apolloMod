@@ -4,6 +4,8 @@
 
 package com.andrew.apolloMod;
 
+import android.os.Build;
+
 /**
  * @author Andrew Neal
  */
@@ -75,5 +77,17 @@ public final class Constants {
 
     private Constants() {
         throw new UnsupportedOperationException();
+    }
+    
+    public static boolean isApi16Supported() {
+    	return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN);
+    }
+    
+    public static boolean isApi14Supported() {
+    	return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH);
+    }
+    
+    public static boolean isApi11Supported() {
+    	return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB);
     }
 }

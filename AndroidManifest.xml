@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="8"
         android:targetSdkVersion="15" />
 
     <!-- This is used for Last.fm and Google Music -->
@@ -32,7 +32,7 @@
         android:largeHeap="true"
         android:process=":main"
         android:taskAffinity="apollo.task.music"
-        android:theme="@android:style/Theme.Holo.Light" >
+        android:theme="@style/Theme.Sherlock.Light" >
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".activities.QueryBrowserActivity" />
@@ -40,7 +40,7 @@
         <activity
             android:name=".activities.QueryBrowserActivity"
             android:exported="true"
-            android:theme="@android:style/Theme.Holo.Light" >
+            android:theme="@style/Theme.Sherlock.Light" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
                 <action android:name="android.intent.action.MEDIA_SEARCH" />
@@ -145,7 +145,7 @@
         <activity
             android:name=".menu.PlaylistDialog"
             android:label="@string/rename_playlist"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" >
+            android:theme="@style/Theme.Sherlock.Light.Dialog" >
             <intent-filter>
                 <action android:name="com.andrew.apolloMod.CREATE_PLAYLIST" />
 
@@ -160,7 +160,7 @@
         <activity
             android:name="com.andrew.apolloMod.menu.PlaylistPicker"
             android:icon="@drawable/ic_launcher"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" >
+            android:theme="@style/Theme.Sherlock.Light.Dialog" >
             <intent-filter>
                 <action android:name="com.andrew.apolloMod.ADD_TO_PLAYLIST" />
 

@@ -16,12 +16,15 @@
 
 package com.andrew.apolloMod.helpers;
 
-import android.app.Fragment;
+import com.actionbarsherlock.app.SherlockFragment;
+
+import android.support.v4.app.Fragment;
+
 
 /**
  * An abstract class that defines a {@link Fragment} like refreshable
  */
-public abstract class RefreshableFragment extends Fragment {
+public abstract class RefreshableFragment extends SherlockFragment {
 
     /**
      * Method invoked when the fragment need to be refreshed

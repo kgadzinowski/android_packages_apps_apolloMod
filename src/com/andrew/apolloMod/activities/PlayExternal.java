@@ -16,7 +16,10 @@
 
 package com.andrew.apolloMod.activities;
 
-import android.app.Activity;
+
+import java.io.File;
+import java.net.URLDecoder;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -30,18 +33,16 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.andrew.apolloMod.IApolloService;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.service.ServiceToken;
 
-import java.io.File;
-import java.net.URLDecoder;
-
 /**
  * An activity that lets external browsers launching music inside Apollo
  */
-public class PlayExternal extends Activity
+public class PlayExternal extends SherlockActivity
     implements ServiceConnection, DialogInterface.OnCancelListener {
 
     private static final String TAG = "PlayExternal";

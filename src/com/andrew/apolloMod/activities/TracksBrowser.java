@@ -4,9 +4,36 @@
 
 package com.andrew.apolloMod.activities;
 
+
+import static com.andrew.apolloMod.Constants.ALBUM_ID_KEY;
+import static com.andrew.apolloMod.Constants.ALBUM_KEY;
+import static com.andrew.apolloMod.Constants.ARTIST_ID;
+import static com.andrew.apolloMod.Constants.ARTIST_KEY;
+import static com.andrew.apolloMod.Constants.GENRE_KEY;
+import static com.andrew.apolloMod.Constants.INTENT_ACTION;
+import static com.andrew.apolloMod.Constants.MIME_TYPE;
+import static com.andrew.apolloMod.Constants.NUMALBUMS;
+import static com.andrew.apolloMod.Constants.PLAYLIST_FAVORITES;
+import static com.andrew.apolloMod.Constants.PLAYLIST_NAME;
+import static com.andrew.apolloMod.Constants.PLAYLIST_QUEUE;
+import static com.andrew.apolloMod.Constants.SIZE_NORMAL;
+import static com.andrew.apolloMod.Constants.SRC_FILE;
+import static com.andrew.apolloMod.Constants.SRC_FIRST_AVAILABLE;
+import static com.andrew.apolloMod.Constants.SRC_GALLERY;
+import static com.andrew.apolloMod.Constants.SRC_LASTFM;
+import static com.andrew.apolloMod.Constants.THEME_ITEM_BACKGROUND;
+import static com.andrew.apolloMod.Constants.TYPE_ALBUM;
+import static com.andrew.apolloMod.Constants.TYPE_ARTIST;
+import static com.andrew.apolloMod.Constants.TYPE_GENRE;
+import static com.andrew.apolloMod.Constants.TYPE_PLAYLIST;
 import android.app.Activity;
 import android.app.SearchManager;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -21,12 +48,15 @@ import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Audio.ArtistColumns;
 import android.support.v4.view.ViewPager;
 import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.andrew.apolloMod.IApolloService;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.cache.ImageInfo;
@@ -34,19 +64,17 @@ import com.andrew.apolloMod.cache.ImageProvider;
 import com.andrew.apolloMod.helpers.utils.ApolloUtils;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.helpers.utils.ThemeUtils;
+import com.andrew.apolloMod.service.ApolloService;
+import com.andrew.apolloMod.service.ServiceToken;
 import com.andrew.apolloMod.ui.adapters.PagerAdapter;
 import com.andrew.apolloMod.ui.fragments.list.ArtistAlbumsFragment;
 import com.andrew.apolloMod.ui.fragments.list.TracksFragment;
-import com.andrew.apolloMod.service.ApolloService;
-import com.andrew.apolloMod.service.ServiceToken;
-
-import static com.andrew.apolloMod.Constants.*;
 
 /**
  * @author Andrew Neal
  * @Note This displays specific track or album listings
  */
-public class TracksBrowser extends Activity implements ServiceConnection {
+public class TracksBrowser extends SherlockFragmentActivity implements ServiceConnection {
 
     // Bundle
     private Bundle bundle;
@@ -121,7 +149,7 @@ public class TracksBrowser extends Activity implements ServiceConnection {
     }
     
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(android.view.MenuItem item) {
     	ImageInfo mInfo = null;      
         switch (item.getItemId()) {
             case R.id.image_edit_gallery:
@@ -309,7 +337,7 @@ public class TracksBrowser extends Activity implements ServiceConnection {
      * Set the ActionBar title
      */
     private void initActionBar() {
-        ApolloUtils.showUpTitleOnly(getActionBar());
+        ApolloUtils.showUpTitleOnly(getSupportActionBar());
 
         // The ActionBar Title and UP ids are hidden.
         int titleId = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
@@ -319,7 +347,7 @@ public class TracksBrowser extends Activity implements ServiceConnection {
         ImageView actionBarUp = (ImageView)findViewById(upId);
 
         // Theme chooser
-        ThemeUtils.setActionBarBackground(this, getActionBar(), "action_bar_background");
+        ThemeUtils.setActionBarBackground(this, getSupportActionBar(), "action_bar_background");
         ThemeUtils.setTextColor(this, actionBarTitle, "action_bar_title_color");
         ThemeUtils.initThemeChooser(this, actionBarUp, "action_bar_up", THEME_ITEM_BACKGROUND);
 
@@ -375,7 +403,7 @@ public class TracksBrowser extends Activity implements ServiceConnection {
      */
     private void initPager() {
         // Initiate PagerAdapter
-        PagerAdapter mPagerAdapter = new PagerAdapter(getFragmentManager());
+        PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         if (ApolloUtils.isArtist(mimeType))
             // Show all albums for an artist
             mPagerAdapter.addFragment(new ArtistAlbumsFragment(bundle));

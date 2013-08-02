@@ -15,6 +15,12 @@
 
 package com.andrew.apolloMod.service;
 
+import static com.andrew.apolloMod.Constants.APOLLO_PREFERENCES;
+import static com.andrew.apolloMod.Constants.DATA_SCHEME;
+import static com.andrew.apolloMod.Constants.SIZE_THUMB;
+import static com.andrew.apolloMod.Constants.SRC_FIRST_AVAILABLE;
+import static com.andrew.apolloMod.Constants.TYPE_ALBUM;
+
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Random;
@@ -44,6 +50,7 @@ import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.RemoteControlClient;
 import android.media.RemoteControlClient.MetadataEditor;
 import android.media.audiofx.AudioEffect;
@@ -60,12 +67,14 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Audio.AudioColumns;
 import android.provider.MediaStore.MediaColumns;
+import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.andrew.apolloMod.Constants;
 import com.andrew.apolloMod.IApolloService;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.app.widgets.AppWidget11;
@@ -73,17 +82,10 @@ import com.andrew.apolloMod.app.widgets.AppWidget41;
 import com.andrew.apolloMod.app.widgets.AppWidget42;
 import com.andrew.apolloMod.cache.ImageInfo;
 import com.andrew.apolloMod.helpers.GetBitmapTask;
-import com.andrew.apolloMod.helpers.GetBitmapTask.OnBitmapReadyListener;
 import com.andrew.apolloMod.helpers.utils.ImageUtils;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.helpers.utils.VisualizerUtils;
 import com.andrew.apolloMod.preferences.SharedPreferencesCompat;
-
-import static com.andrew.apolloMod.Constants.APOLLO_PREFERENCES;
-import static com.andrew.apolloMod.Constants.DATA_SCHEME;
-import static com.andrew.apolloMod.Constants.SIZE_THUMB;
-import static com.andrew.apolloMod.Constants.SRC_FIRST_AVAILABLE;
-import static com.andrew.apolloMod.Constants.TYPE_ALBUM;
 
 public class ApolloService extends Service implements GetBitmapTask.OnBitmapReadyListener {
     /**
@@ -214,6 +216,8 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
     private final Shuffler mRand = new Shuffler();
 
     private int mOpenFailedCounter = 0;
+    
+    private boolean mAutoPlayNext = false;
 
     String[] mCursorCols = new String[] {
             "audio._id AS _id", MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
@@ -452,15 +456,20 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
         mediaButtonIntent.setComponent(rec);
         PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
                 mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mRemoteControlClient = new RemoteControlClient(mediaPendingIntent);
-        mAudioManager.registerRemoteControlClient(mRemoteControlClient);
+       
+        if(Constants.isApi14Supported()) {
+    	   mRemoteControlClient = new RemoteControlClient(mediaPendingIntent);
+    	   mAudioManager.registerRemoteControlClient(mRemoteControlClient);
 
-        int flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
-                | RemoteControlClient.FLAG_KEY_MEDIA_NEXT | RemoteControlClient.FLAG_KEY_MEDIA_PLAY
-                | RemoteControlClient.FLAG_KEY_MEDIA_PAUSE
-                | RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE
-                | RemoteControlClient.FLAG_KEY_MEDIA_STOP;
-        mRemoteControlClient.setTransportControlFlags(flags);
+    	   int flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
+    			   | RemoteControlClient.FLAG_KEY_MEDIA_NEXT | RemoteControlClient.FLAG_KEY_MEDIA_PLAY
+    			   | RemoteControlClient.FLAG_KEY_MEDIA_PAUSE
+    			   | RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE
+    			   | RemoteControlClient.FLAG_KEY_MEDIA_STOP;
+    	   mRemoteControlClient.setTransportControlFlags(flags);
+        }
+       
+
 
         mPreferences = getSharedPreferences(APOLLO_PREFERENCES, MODE_WORLD_READABLE
                 | MODE_WORLD_WRITEABLE);
@@ -515,8 +524,11 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
         mPlayer = null;
 
         mAudioManager.abandonAudioFocus(mAudioFocusListener);
-        mAudioManager.unregisterRemoteControlClient(mRemoteControlClient);
-
+        
+        if(Constants.isApi14Supported()) {
+        	mAudioManager.unregisterRemoteControlClient(mRemoteControlClient);
+        }
+        
         // make sure there aren't any other messages coming
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         mMediaplayerHandler.removeCallbacksAndMessages(null);
@@ -946,23 +958,24 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
         i.setAction(what.replace(APOLLO_PACKAGE_NAME, MUSIC_PACKAGE_NAME));
         sendStickyBroadcast(i);
 
-        if (what.equals(PLAYSTATE_CHANGED)) {
-            mRemoteControlClient
-                    .setPlaybackState(mIsSupposedToBePlaying ? RemoteControlClient.PLAYSTATE_PLAYING
-                            : RemoteControlClient.PLAYSTATE_PAUSED);
-        } else if (what.equals(META_CHANGED)) {
-            RemoteControlClient.MetadataEditor ed = mRemoteControlClient.editMetadata(true);
-            ed.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, getTrackName());
-            ed.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, getAlbumName());
-            ed.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, getArtistName());
-            ed.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration());
-            Bitmap b = getAlbumBitmap();
-            if (b != null) {
-                ed.putBitmap(MetadataEditor.BITMAP_KEY_ARTWORK, b);
-            }
-            ed.apply();
+        if(Constants.isApi14Supported()) {
+	        if (what.equals(PLAYSTATE_CHANGED)) {
+	            mRemoteControlClient
+	                    .setPlaybackState(mIsSupposedToBePlaying ? RemoteControlClient.PLAYSTATE_PLAYING
+	                            : RemoteControlClient.PLAYSTATE_PAUSED);
+	        } else if (what.equals(META_CHANGED)) {
+	            RemoteControlClient.MetadataEditor ed = mRemoteControlClient.editMetadata(true);
+	            ed.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, getTrackName());
+	            ed.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, getAlbumName());
+	            ed.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, getArtistName());
+	            ed.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration());
+	            Bitmap b = getAlbumBitmap();
+	            if (b != null) {
+	                ed.putBitmap(MetadataEditor.BITMAP_KEY_ARTWORK, b);
+	            }
+	            ed.apply();
+	        }
         }
-
         if (what.equals(QUEUE_CHANGED)) {
             saveQueue(true);
         } else {
@@ -1329,15 +1342,84 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
     }
 
     private void updateNotification() {
-        Bitmap b = getAlbumBitmap();
-        RemoteViews views = new RemoteViews(getPackageName(), R.layout.status_bar);
-        RemoteViews bigViews = new RemoteViews(getPackageName(), R.layout.status_bar_expanded);
         
-        if (b != null) {
+
+        PendingIntent notifIntent = PendingIntent
+        .getActivity(this, 0, new Intent("com.andrew.apolloMod.PLAYBACK_VIEWER")
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0);
+        
+        if(Constants.isApi11Supported()) {
+        	RemoteViews[] allViews = getNotificationViews();
+        	RemoteViews bigViews = allViews[0];
+        	RemoteViews views = allViews[1];
+        	
+        	 status = new NotificationCompat.Builder(this).build();
+             status.contentView = views;
+             if(Constants.isApi16Supported()) {
+            	 status.bigContentView = bigViews;
+             }
+         	 status.flags = Notification.FLAG_ONGOING_EVENT;
+             status.icon = R.drawable.stat_notify_music;
+             status.contentIntent = notifIntent;
+        } else {
+        	RemoteViews views = getNotificationViewApi8();
+        	
+        	NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        	builder.setContent(views);
+        	builder.setSmallIcon(R.drawable.stat_notify_music);
+        	builder.setContentIntent(notifIntent);
+        	status = builder.build();
+        	status.contentView = views;
+        }
+        startForeground(PLAYBACKSERVICE_STATUS, status);
+    }
+    
+    
+    public RemoteViews getNotificationViewApi8() {
+    	
+    	RemoteViews views = new RemoteViews(getPackageName(), R.layout.status_bar_old);
+    	
+    	Bitmap b = getAlbumBitmap();
+    	
+    	if (b != null) {
+            views.setViewVisibility(R.id.icon, View.VISIBLE);
+            views.setImageViewBitmap(R.id.icon, b);
+        } else {
+            views.setViewVisibility(R.id.icon, View.GONE);
+        }
+    	
+        if (getAudioId() < 0) {
+            // streaming
+            views.setTextViewText(R.id.trackname, getPath());
+            views.setTextViewText(R.id.artistalbum, null);
+        } else {
+            String artist = getArtistName();
+            String album = getAlbumName();
+
+            views.setTextViewText(R.id.trackname, getTrackName());
+
+            views.setTextViewText(R.id.artistalbum, artist + " - " + album);
+        }
+        
+        return views;
+        
+    }
+    
+    /** Return notification remote views
+     * 
+     * @return [views, bigViews]
+     */
+    public RemoteViews[] getNotificationViews() {
+    	Bitmap b = getAlbumBitmap();
+    	
+    	RemoteViews bigViews = new RemoteViews(getPackageName(), R.layout.status_bar_expanded);
+    	RemoteViews views = new RemoteViews(getPackageName(), R.layout.status_bar);
+    	
+    	if (b != null) {
+    		bigViews.setImageViewBitmap(R.id.status_bar_album_art, b);
             views.setViewVisibility(R.id.status_bar_icon, View.GONE);
             views.setViewVisibility(R.id.status_bar_album_art, View.VISIBLE);
             views.setImageViewBitmap(R.id.status_bar_album_art, b);
-            bigViews.setImageViewBitmap(R.id.status_bar_album_art, b);
         } else {
             views.setViewVisibility(R.id.status_bar_icon, View.VISIBLE);
             views.setViewVisibility(R.id.status_bar_album_art, View.GONE);
@@ -1394,15 +1476,8 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
         
         bigViews.setTextViewText(R.id.status_bar_album_name, getAlbumName());
         
-        status = new Notification.Builder(this).build();
-        status.contentView = views;
-        status.bigContentView = bigViews;
-        status.flags = Notification.FLAG_ONGOING_EVENT;
-        status.icon = R.drawable.stat_notify_music;
-        status.contentIntent = PendingIntent
-                .getActivity(this, 0, new Intent("com.andrew.apolloMod.PLAYBACK_VIEWER")
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0);
-        startForeground(PLAYBACKSERVICE_STATUS, status);
+        return new RemoteViews[] {views, bigViews};
+    	
     }
     
     private void stop(boolean remove_status_icon) {
@@ -1646,12 +1721,18 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
         mDelayedStopHandler.sendMessageDelayed(msg, IDLE_DELAY);
         stopForeground(false);
         if (status != null) {
-            status.contentView.setImageViewResource(R.id.status_bar_play,
-                    mIsSupposedToBePlaying ? R.drawable.apollo_holo_dark_play
-                            : R.drawable.apollo_holo_dark_pause);
-            status.bigContentView.setImageViewResource(R.id.status_bar_play,
-                    mIsSupposedToBePlaying ? R.drawable.apollo_holo_dark_play
-                            : R.drawable.apollo_holo_dark_pause);
+        	if(Constants.isApi16Supported()) {
+	            status.contentView.setImageViewResource(R.id.status_bar_play,
+	                    mIsSupposedToBePlaying ? R.drawable.apollo_holo_dark_play
+	                            : R.drawable.apollo_holo_dark_pause);
+            
+            	status.bigContentView.setImageViewResource(R.id.status_bar_play,
+            			mIsSupposedToBePlaying ? R.drawable.apollo_holo_dark_play
+            					: R.drawable.apollo_holo_dark_pause);
+            } else {
+            	//TODO:Add support for lower APis
+            }
+
             NotificationManager mManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
             mManager.notify(PLAYBACKSERVICE_STATUS, status);
         }
@@ -2235,7 +2316,12 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
         }
 
         public void setNextDataSource(String path) {
-            mCurrentMediaPlayer.setNextMediaPlayer(null);
+        	
+        	if(Constants.isApi16Supported()) {
+        		mCurrentMediaPlayer.setNextMediaPlayer(null);
+        	} else {
+        		mAutoPlayNext = false;
+        	}
             if (mNextMediaPlayer != null) {
                 mNextMediaPlayer.release();
                 mNextMediaPlayer = null;
@@ -2247,7 +2333,11 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
             mNextMediaPlayer.setWakeMode(ApolloService.this, PowerManager.PARTIAL_WAKE_LOCK);
             mNextMediaPlayer.setAudioSessionId(getAudioSessionId());
             if (setDataSourceImpl(mNextMediaPlayer, path)) {
-                mCurrentMediaPlayer.setNextMediaPlayer(mNextMediaPlayer);
+            	if(Constants.isApi16Supported()) {
+            		mCurrentMediaPlayer.setNextMediaPlayer(mNextMediaPlayer);
+            	} else {
+            		mAutoPlayNext = true;
+            	}
             } else {
                 // failed to open next, we'll transition the old fashioned way,
                 // which will skip over the faulty file
@@ -2294,6 +2384,13 @@ public class ApolloService extends Service implements GetBitmapTask.OnBitmapRead
                     mCurrentMediaPlayer = mNextMediaPlayer;
                     mNextMediaPlayer = null;
                     mHandler.sendEmptyMessage(TRACK_WENT_TO_NEXT);
+                    
+                    if(!Constants.isApi16Supported())  {
+                    	if(mAutoPlayNext) {
+                    		mCurrentMediaPlayer.start();
+                    	}
+                    }
+                    
                 } else {
                     // Acquire a temporary wakelock, since when we return from
                     // this callback the MediaPlayer will release its wakelock

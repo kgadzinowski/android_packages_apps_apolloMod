@@ -4,13 +4,10 @@
 
 package com.andrew.apolloMod.ui.fragments.grid;
 
-import android.app.Fragment;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +15,8 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Audio.AudioColumns;
 import android.provider.MediaStore.MediaColumns;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -25,11 +24,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.internal.widget.IcsAdapterView.AdapterContextMenuInfo;
 import com.andrew.apolloMod.NowPlayingCursor;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.helpers.AddIdCursorLoader;
@@ -40,7 +40,7 @@ import com.andrew.apolloMod.ui.adapters.QuickQueueAdapter;
 /**
  * @author Andrew Neal
  */
-public class QuickQueueFragment extends Fragment implements LoaderCallbacks<Cursor>,
+public class QuickQueueFragment extends SherlockFragment implements LoaderCallbacks<Cursor>,
         OnItemClickListener {
 
     // Adapter

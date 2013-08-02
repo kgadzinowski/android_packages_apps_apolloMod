@@ -15,25 +15,27 @@
  */
 
 package com.andrew.apolloMod.helpers;
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Map;
 
-import android.content.AsyncTaskLoader;
 import android.content.ContentQueryMap;
-import android.content.Context;
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Audio;
-import android.provider.MediaStore.MediaColumns;
 import android.provider.MediaStore.Audio.AlbumColumns;
 import android.provider.MediaStore.Audio.AudioColumns;
-
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Map;
+import android.provider.MediaStore.MediaColumns;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.content.Loader.ForceLoadContentObserver;
 
 
 /**

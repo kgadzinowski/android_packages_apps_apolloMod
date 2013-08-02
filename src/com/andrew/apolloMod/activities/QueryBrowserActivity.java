@@ -16,7 +16,11 @@
 
 package com.andrew.apolloMod.activities;
 
-import android.app.ListActivity;
+
+import static com.andrew.apolloMod.Constants.ALBUM_KEY;
+import static com.andrew.apolloMod.Constants.ARTIST_ID;
+import static com.andrew.apolloMod.Constants.ARTIST_KEY;
+import static com.andrew.apolloMod.Constants.MIME_TYPE;
 import android.app.SearchManager;
 import android.content.AsyncQueryHandler;
 import android.content.ComponentName;
@@ -34,6 +38,7 @@ import android.os.IBinder;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,20 +48,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockListActivity;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.helpers.utils.ApolloUtils;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.service.ServiceToken;
 
-import static com.andrew.apolloMod.Constants.ALBUM_KEY;
-import static com.andrew.apolloMod.Constants.ARTIST_ID;
-import static com.andrew.apolloMod.Constants.ARTIST_KEY;
-import static com.andrew.apolloMod.Constants.MIME_TYPE;
-
-public class QueryBrowserActivity extends ListActivity implements ServiceConnection {
+public class QueryBrowserActivity extends SherlockListActivity implements ServiceConnection {
     private QueryListAdapter mAdapter;
 
     private boolean mAdapterSent;

@@ -4,27 +4,42 @@
 
 package com.andrew.apolloMod.ui.fragments.list;
 
-import android.app.Fragment;
-import android.app.LoaderManager.LoaderCallbacks;
+import static com.andrew.apolloMod.Constants.ALBUM_ID_KEY;
+import static com.andrew.apolloMod.Constants.ALBUM_KEY;
+import static com.andrew.apolloMod.Constants.ARTIST_KEY;
+import static com.andrew.apolloMod.Constants.EXTERNAL;
+import static com.andrew.apolloMod.Constants.INTENT_ADD_TO_PLAYLIST;
+import static com.andrew.apolloMod.Constants.INTENT_PLAYLIST_LIST;
+import static com.andrew.apolloMod.Constants.MIME_TYPE;
+import static com.andrew.apolloMod.Constants.SIZE_THUMB;
+import static com.andrew.apolloMod.Constants.SRC_FIRST_AVAILABLE;
+import static com.andrew.apolloMod.Constants.TYPE_ALBUM;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Audio.AlbumColumns;
-import android.view.*;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockFragment;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.activities.TracksBrowser;
 import com.andrew.apolloMod.cache.ImageInfo;
@@ -34,13 +49,11 @@ import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.service.ApolloService;
 import com.andrew.apolloMod.ui.adapters.ArtistAlbumAdapter;
 
-import static com.andrew.apolloMod.Constants.*;
-
 /**
  * @author Andrew Neal
  * @Note This is used in the @TracksBrowser after touching an artist from @ArtistsFragment
  */
-public class ArtistAlbumsFragment extends Fragment implements LoaderCallbacks<Cursor>,
+public class ArtistAlbumsFragment extends SherlockFragment implements LoaderCallbacks<Cursor>,
         OnItemClickListener {
 
     // Adapter
@@ -261,7 +274,7 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderCallbacks<Cu
         mInfo.source = SRC_FIRST_AVAILABLE;
         mInfo.data = new String[]{ albumId , artistName, albumName };
         
-        ImageProvider.getInstance( getActivity() ).loadImage( headerImage, mInfo );
+        ImageProvider.getInstance( getSherlockActivity() ).loadImage( headerImage, mInfo );
         
         // Set artist name
         TextView headerText = (TextView)header.findViewById(R.id.header_text);

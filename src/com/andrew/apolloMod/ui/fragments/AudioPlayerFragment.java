@@ -15,7 +15,6 @@ import static com.andrew.apolloMod.Constants.TYPE_ALBUM;
 
 import java.lang.ref.WeakReference;
 
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +38,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.activities.TracksBrowser;
 import com.andrew.apolloMod.cache.ImageInfo;
@@ -54,7 +54,7 @@ import com.andrew.apolloMod.ui.widgets.VisualizerView;
 /**
  * @author Andrew Neal
  */
-public class AudioPlayerFragment extends Fragment {
+public class AudioPlayerFragment extends SherlockFragment {
 
     // Track, album, and artist name
     private TextView mTrackName, mAlbumArtistName;
@@ -611,7 +611,7 @@ public class AudioPlayerFragment extends Fragment {
         mInfo.source = SRC_FIRST_AVAILABLE;
         mInfo.data = new String[]{ albumId , artistName, albumName };
         
-        ImageProvider.getInstance( getActivity() ).loadImage( mAlbumArt, mInfo );
+        ImageProvider.getInstance( getSherlockActivity() ).loadImage( mAlbumArt, mInfo );
 
         // Theme chooser
         ThemeUtils.setTextColor(getActivity(), mTrackName, "audio_player_text_color");

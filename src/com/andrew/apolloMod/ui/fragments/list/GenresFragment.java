@@ -4,16 +4,18 @@
 
 package com.andrew.apolloMod.ui.fragments.list;
 
-import android.app.Fragment;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
+
+import static com.andrew.apolloMod.Constants.GENRE_KEY;
+import static com.andrew.apolloMod.Constants.MIME_TYPE;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Audio;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -24,19 +26,17 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.activities.TracksBrowser;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.ui.adapters.GenreAdapter;
 
-import static com.andrew.apolloMod.Constants.GENRE_KEY;
-import static com.andrew.apolloMod.Constants.MIME_TYPE;
-
 /**
  * @author Andrew Neal
  * @Note This is the fifth and final tab
  */
-public class GenresFragment extends Fragment implements LoaderCallbacks<Cursor>,
+public class GenresFragment extends SherlockFragment implements LoaderCallbacks<Cursor>,
         OnItemClickListener {
 
     // Adapter

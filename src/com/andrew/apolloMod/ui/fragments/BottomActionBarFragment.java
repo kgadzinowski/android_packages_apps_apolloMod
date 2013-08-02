@@ -4,7 +4,6 @@
 
 package com.andrew.apolloMod.ui.fragments;
 
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.helpers.utils.ThemeUtils;
@@ -26,7 +26,7 @@ import com.andrew.apolloMod.ui.widgets.BottomActionBar;
 /**
  * @author Andrew Neal
  */
-public class BottomActionBarFragment extends Fragment {
+public class BottomActionBarFragment extends SherlockFragment {
 
 	private ImageButton mPrev, mPlay, mNext;
     private BottomActionBar mBottomActionBar;
@@ -90,7 +90,7 @@ public class BottomActionBarFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (mBottomActionBar != null) {
-                mBottomActionBar.updateBottomActionBar(getActivity());
+                mBottomActionBar.updateBottomActionBar(getSherlockActivity());
             }
             setPauseButtonImage();
         }

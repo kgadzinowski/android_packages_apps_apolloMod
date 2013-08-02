@@ -36,13 +36,13 @@ public class ScrollingTabsAdapter implements TabAdapter {
         //Get tab visibility preferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
         Set<String> defaults = new HashSet<String>(Arrays.asList(mTitles));
-        Set<String> tabs_set = sp.getStringSet(TABS_ENABLED,defaults);
+        Set<String> tabs_set = defaults;//sp.getStringSet(TABS_ENABLED,defaults);
         //if its empty fill reset it to full defaults
     		//stops app from crashing when no tabs are shown
     		//TODO:rewrite activity to not crash when no tabs are chosen to show
         		//or display error when no option is chosen
-        if(tabs_set.size()==0)
-        	tabs_set = defaults;
+        //if(tabs_set.size()==0)
+        //	tabs_set = defaults;
         
         //MultiSelectListPreference fails to preserve order of options chosen
         //Re-order based on order of default options array

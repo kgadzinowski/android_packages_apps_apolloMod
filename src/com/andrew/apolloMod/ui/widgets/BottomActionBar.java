@@ -7,7 +7,6 @@ package com.andrew.apolloMod.ui.widgets;
 import static com.andrew.apolloMod.Constants.SIZE_THUMB;
 import static com.andrew.apolloMod.Constants.SRC_FIRST_AVAILABLE;
 import static com.andrew.apolloMod.Constants.TYPE_ALBUM;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.RemoteException;
@@ -19,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.activities.AudioPlayerHolder;
 import com.andrew.apolloMod.activities.QuickQueue;
@@ -52,7 +52,7 @@ public class BottomActionBar extends LinearLayout implements OnClickListener, On
      * @param activity
      * @throws RemoteException
      */
-    public void updateBottomActionBar(Activity activity) {
+    public void updateBottomActionBar(SherlockFragmentActivity activity) {
         View bottomActionBar = activity.findViewById(R.id.bottom_action_bar);
         if (bottomActionBar == null) {
             return;
@@ -73,7 +73,7 @@ public class BottomActionBar extends LinearLayout implements OnClickListener, On
             // Album art
             ImageView mAlbumArt = (ImageView)bottomActionBar
                     .findViewById(R.id.bottom_action_bar_album_art);
-            
+         
 
             ImageInfo mInfo = new ImageInfo();
             mInfo.type = TYPE_ALBUM;

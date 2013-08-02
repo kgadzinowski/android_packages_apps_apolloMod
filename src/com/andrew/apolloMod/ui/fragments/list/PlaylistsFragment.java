@@ -4,12 +4,14 @@
 
 package com.andrew.apolloMod.ui.fragments.list;
 
-import android.app.Fragment;
-import android.app.LoaderManager.LoaderCallbacks;
+
+
+import static com.andrew.apolloMod.Constants.INTENT_KEY_RENAME;
+import static com.andrew.apolloMod.Constants.INTENT_RENAME_PLAYLIST;
+import static com.andrew.apolloMod.Constants.MIME_TYPE;
+import static com.andrew.apolloMod.Constants.PLAYLIST_NAME;
 import android.content.ContentUris;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +19,9 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Audio.PlaylistsColumns;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -24,24 +29,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.internal.widget.IcsAdapterView.AdapterContextMenuInfo;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.activities.TracksBrowser;
 import com.andrew.apolloMod.helpers.utils.MusicUtils;
 import com.andrew.apolloMod.ui.adapters.PlaylistAdapter;
 
-import static com.andrew.apolloMod.Constants.INTENT_KEY_RENAME;
-import static com.andrew.apolloMod.Constants.INTENT_RENAME_PLAYLIST;
-import static com.andrew.apolloMod.Constants.MIME_TYPE;
-import static com.andrew.apolloMod.Constants.PLAYLIST_NAME;
-
 /**
  * @author Andrew Neal
  */
-public class PlaylistsFragment extends Fragment implements LoaderCallbacks<Cursor>,
+public class PlaylistsFragment extends SherlockFragment implements LoaderCallbacks<Cursor>,
         OnItemClickListener {
 
     // Adapter

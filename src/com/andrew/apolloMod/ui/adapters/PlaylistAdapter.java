@@ -26,7 +26,7 @@ public class PlaylistAdapter extends SimpleCursorAdapter {
     private Context mContext;
 
     public PlaylistAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
-        super(context, layout, c, from, to, flags);
+        super(context, layout, c, from, to);
         mContext = context;
     }
 

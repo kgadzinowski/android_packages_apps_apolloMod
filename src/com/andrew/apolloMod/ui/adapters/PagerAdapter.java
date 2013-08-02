@@ -6,24 +6,24 @@ package com.andrew.apolloMod.ui.adapters;
 
 import java.util.ArrayList;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentManager;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.andrew.apolloMod.helpers.RefreshableFragment;
 
 /**
  * @author Andrew Neal
  */
-public class PagerAdapter extends FragmentPagerAdapter {
+public class PagerAdapter extends android.support.v4.app.FragmentPagerAdapter {
 
-    private final ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
+    private final ArrayList<SherlockFragment> mFragments = new ArrayList<SherlockFragment>();
 
     public PagerAdapter(FragmentManager manager) {
         super(manager);
     }
 
-    public void addFragment(Fragment fragment) {
+    public void addFragment(SherlockFragment fragment) {
         mFragments.add(fragment);
         notifyDataSetChanged();
     }
@@ -34,7 +34,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public SherlockFragment getItem(int position) {
         return mFragments.get(position);
     }
 

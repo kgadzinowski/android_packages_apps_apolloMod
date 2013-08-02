@@ -1,13 +1,14 @@
 package com.andrew.apolloMod.cache;
 
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.LruCache;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.util.LruCache;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 
 public final class ImageCache {
@@ -37,14 +38,14 @@ public final class ImageCache {
         mLruCache = new LruCache<String, Bitmap>(lruCacheSize) {
             @Override
             protected int sizeOf(final String paramString, final Bitmap paramBitmap) {
-                return paramBitmap.getByteCount();
+                return paramBitmap.getRowBytes() * paramBitmap.getHeight();
             }
 
         };
     }
 
-    public static final ImageCache findOrCreateCache(final Activity activity) {    	
-    	FragmentManager nFragmentManger = activity.getFragmentManager();
+    public static final ImageCache findOrCreateCache(final SherlockFragmentActivity activity) {    	
+    	FragmentManager nFragmentManger = activity.getSupportFragmentManager();
         RetainFragment retainFragment = (RetainFragment)nFragmentManger.findFragmentByTag(TAG);
         if (retainFragment == null) {
             retainFragment = new RetainFragment();

@@ -4,12 +4,17 @@
 
 package com.andrew.apolloMod.helpers.utils;
 
-import java.io.*;
+import static com.andrew.apolloMod.Constants.MIME_TYPE;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import android.app.ActionBar;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,16 +27,16 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore.Audio;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.andrew.apolloMod.R;
 import com.androidquery.util.AQUtility;
-
-import static com.andrew.apolloMod.Constants.MIME_TYPE;
 
 /**
  * @author Andrew Neal

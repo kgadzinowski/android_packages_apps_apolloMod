@@ -4,7 +4,6 @@
 
 package com.andrew.apolloMod.helpers.utils;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,17 +11,20 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.MenuItem;
+
 import static com.andrew.apolloMod.Constants.APOLLO;
 import static com.andrew.apolloMod.Constants.APOLLO_PREFERENCES;
 import static com.andrew.apolloMod.Constants.THEME_ITEM_FOREGROUND;
 import static com.andrew.apolloMod.Constants.THEME_PACKAGE_NAME;
+
 
 /**
  * @author Andrew Neal TODO - clean this up

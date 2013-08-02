@@ -11,6 +11,10 @@ import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.widget.ImageView;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.andrew.apolloMod.Constants;
 import com.andrew.apolloMod.R;
 import com.andrew.apolloMod.helpers.GetBitmapTask;
 import com.andrew.apolloMod.helpers.utils.ImageUtils;
@@ -43,7 +47,7 @@ public class ImageProvider implements GetBitmapTask.OnBitmapReadyListener{
     	thumbSize = (int) ( ( 153 * (metrics.densityDpi/160f) ) + 0.5f );
     }
     
-    public final static ImageProvider getInstance( final Activity activity ) {    	
+    public final static ImageProvider getInstance( final SherlockFragmentActivity activity ) {    	
         if (mInstance == null) {
             mInstance = new ImageProvider( activity );
             mInstance.setImageCache(ImageCache.findOrCreateCache(activity));
@@ -103,7 +107,11 @@ public class ImageProvider implements GetBitmapTask.OnBitmapReadyListener{
         if (pendingImages == null) {
             pendingImages = Collections.newSetFromMap(new WeakHashMap<ImageView, Boolean>()); // create weak set
             pendingImagesMap.put(tag, pendingImages);
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            if(Constants.isApi11Supported()) {
+            	task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+            	task.execute();
+            }
         }
         pendingImages.add(imageView);
         imageView.setTag(tag);
